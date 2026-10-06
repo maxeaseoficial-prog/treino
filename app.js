@@ -274,18 +274,18 @@ function updateWorkoutClock(){
   const w=state.workout,e=workoutExercise(); if(!w||!e)return;
   const total=w.phase==='rest'?e.rest:e.duration;
   const pct=Math.max(0,Math.min(100,w.remaining/Math.max(1,total)*100));
-  const time=$('#workout-time'),ring=$('.timer-ring'),count=$('.workout-count'),progress=$('.workout-progress span');
-  if(time)time.textContent=formatSeconds(w.remaining);
+  const time=$('#workout-time'),restTime=$('#rest-big-time'),ring=$('.timer-ring'),count=$('.workout-count'),progress=$('.workout-progress span');
+  if(time)time.textContent=formatSeconds(w.remaining);\n  if(restTime)restTime.textContent=formatSeconds(w.remaining);
   if(ring)ring.style.setProperty('--progress',pct+'%');
   if(count)count.textContent=(w.index+1)+' / '+routineExercises(w.routine).length;
-  if(progress)progress.style.width=((w.index+(w.phase==='rest'?.7:0))/routineExercises(w.routine).length*100)+'%';
+  if(progress)progress.style.width=((w.index+(w.phase==='rest' ? .7:0))/routineExercises(w.routine).length*100)+'%';
 }
 function renderWorkout(){
   clearModals();
   const w=state.workout;if(!w)return render();
   const exs=routineExercises(w.routine),e=exs[w.index],isRest=w.phase==='rest',total=isRest?e.rest:e.duration,pct=w.remaining/Math.max(1,total)*100;
-  app.innerHTML='<section class="workout-screen '+(isRest?'rest-screen':'')+'"><div class="workout-shell"><div class="workout-top"><button class="back" data-action="exit-workout">'+icon('close')+'</button><div class="workout-progress"><span style="width:'+((w.index+(isRest?.7:0))/exs.length*100)+'%"></span></div><div class="workout-count">'+(w.index+1)+' / '+exs.length+'</div></div><div class="workout-main">'+
-  (isRest?'<div class="pose-panel"><div><div class="rest-label">Descanso</div><div class="rest-big" id="workout-time">'+formatSeconds(w.remaining)+'</div><p>Respire. O próximo exercício é <strong>'+(exs[w.index+1]?exs[w.index+1].title:'a finalização')+'</strong>.</p></div></div>':'<div class="pose-panel"><div class="pose-header"><strong>Como executar</strong><span>INÍCIO → POSIÇÃO</span></div><div class="pose-pair"><div class="pose-card"><label>Início</label>'+poseSvg(e.pose,'before')+'</div><div class="pose-arrow">→</div><div class="pose-card"><label>Posição</label>'+poseSvg(e.pose,'after')+'</div></div></div>')+
+  app.innerHTML='<section class="workout-screen '+(isRest?'rest-screen':'')+'"><div class="workout-shell"><div class="workout-top"><button class="back" data-action="exit-workout">'+icon('close')+'</button><div class="workout-progress"><span style="width:'+((w.index+(isRest ? .7:0))/exs.length*100)+'%"></span></div><div class="workout-count">'+(w.index+1)+' / '+exs.length+'</div></div><div class="workout-main">'+
+  (isRest?'<div class="pose-panel"><div><div class="rest-label">Descanso</div><div class="rest-big" id="rest-big-time">'+formatSeconds(w.remaining)+'</div><p>Respire. O próximo exercício é <strong>'+(exs[w.index+1]?exs[w.index+1].title:'a finalização')+'</strong>.</p></div></div>':'<div class="pose-panel"><div class="pose-header"><strong>Como executar</strong><span>INÍCIO → POSIÇÃO</span></div><div class="pose-pair"><div class="pose-card"><label>Início</label>'+poseSvg(e.pose,'before')+'</div><div class="pose-arrow">→</div><div class="pose-card"><label>Posição</label>'+poseSvg(e.pose,'after')+'</div></div></div>')+
   '<div class="workout-info"><span class="workout-phase">'+(isRest?'Recupere':'Exercício')+'</span><h1>'+(isRest?'Descanse':e.title)+'</h1><p class="workout-desc">'+(isRest?'Deixe a respiração normalizar e prepare-se para o próximo movimento.':e.description)+'</p><div class="cue-box">'+(isRest?'Não precisa se apressar. O cronômetro avança automaticamente.':e.cue)+'</div><div class="timer-wrap"><div class="timer-ring" style="--progress:'+pct+'%"><div class="timer-inner"><strong id="workout-time">'+formatSeconds(w.remaining)+'</strong><span>'+(isRest?'descanso':'tempo')+'</span></div></div><div class="timer-side"><small>'+w.routine.name+'</small><strong>'+formatDuration(routineSeconds(w.routine))+' • '+exs.length+' exercícios</strong></div></div><div class="workout-controls"><button class="round-btn" data-action="workout-prev" '+(w.index===0?'disabled':'')+'>'+icon('prev')+'</button><button class="play-btn" data-action="workout-toggle">'+icon(w.running?'pause':'play')+'</button><button class="round-btn" data-action="workout-next">'+icon('next')+'</button><button class="skip-btn" data-action="workout-next">'+(isRest?'Pular descanso':'Pular')+'</button></div></div></div></div></section>';
 }
 function deleteRoutine(id){
@@ -312,7 +312,7 @@ function render(){
 
 document.addEventListener('click',ev=>{
   const target=ev.target.closest('[data-action]'); if(!target)return;
-  if(target.hasAttribute('data-modal-stop'))return;
+  if(target.classList.contains('modal-backdrop') && ev.target!==target)return;
   const action=target.dataset.action;
   if(action==='nav'){state.view=target.dataset.view;state.detailRoutineId=null;state.modal=null;render()}
   if(action==='new-routine'){state.modal={type:'newRoutine'};render()}
