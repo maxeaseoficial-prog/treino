@@ -275,7 +275,8 @@ function updateWorkoutClock(){
   const total=w.phase==='rest'?e.rest:e.duration;
   const pct=Math.max(0,Math.min(100,w.remaining/Math.max(1,total)*100));
   const time=$('#workout-time'),restTime=$('#rest-big-time'),ring=$('.timer-ring'),count=$('.workout-count'),progress=$('.workout-progress span');
-  if(time)time.textContent=formatSeconds(w.remaining);\n  if(restTime)restTime.textContent=formatSeconds(w.remaining);
+  if(time)time.textContent=formatSeconds(w.remaining);
+  if(restTime)restTime.textContent=formatSeconds(w.remaining);
   if(ring)ring.style.setProperty('--progress',pct+'%');
   if(count)count.textContent=(w.index+1)+' / '+routineExercises(w.routine).length;
   if(progress)progress.style.width=((w.index+(w.phase==='rest' ? .7:0))/routineExercises(w.routine).length*100)+'%';
